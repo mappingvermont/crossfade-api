@@ -1,9 +1,9 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
 import json
 from hashids import Hashids
-
+import sys
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
@@ -12,35 +12,37 @@ db = SQLAlchemy(app)
 hashids = Hashids(min_length=8)
 
 
-from models import Playlist
+from models import Collection
 
 
-@app.route('/')
-def hello():
-    return "Hello World!"
-
-@app.route('/new', methods=['POST'])
+@app.route('/collection/new', methods=['POST'])
 def new():
 
     data = json.loads(request.data.decode())
-    playlist = Playlist(json_state=data['json_state'])
+    collection = Collection(collection_json=data)
 
-    db.session.add(playlist)
+    db.session.add(collection)
     
     # http://stackoverflow.com/questions/1316952
     db.session.flush()
 
-    hashid = hashids.encode(playlist.id)
-    playlist.hashid = hashid
+    hashid = hashids.encode(collection.id)
 
     db.session.commit()
 
-    return playlist.hashid
+    return jsonify({'collection_id': hashid})
 
 
-@app.route('/<name>')
-def hello_name(name):
-    return "Hello {}!".format(name)
+@app.route('/collection/<hash_id>', methods=['GET'])
+def get_collection(hash_id):
+
+    unique_id = hashids.decode(hash_id)
+
+    collection = Collection.query.filter_by(id=unique_id).first_or_404()
+
+    print collection.collection_json
+
+    return jsonify(collection.collection_json)
 
 
 if __name__ == '__main__':
