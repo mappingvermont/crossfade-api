@@ -7,7 +7,6 @@ from hashids import Hashids
 import sys
 import logging
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///crossfade'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -15,9 +14,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 hashids = Hashids(min_length=8)
 
-
 from models import Collection
-
 
 @app.route('/collection/new', methods=['POST', 'OPTIONS'])
 def new():
@@ -45,7 +42,6 @@ def new():
 
         return resp
 
-
 @app.route('/collection/<hash_id>', methods=['GET'])
 def get_collection(hash_id):
 
@@ -57,14 +53,12 @@ def get_collection(hash_id):
 
     return jsonify(collection.collection_json)
 
-
 @app.after_request
 def after_request(response):
   response.headers.add('Access-Control-Allow-Origin', '*')
   response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
   return response
-
 
 if __name__ == '__main__':
     app.run()
