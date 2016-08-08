@@ -54,3 +54,5 @@ docs/_build/
 
 *.DS_Store
 *.env
+*.wsgi
+*.cfg
