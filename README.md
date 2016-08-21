@@ -1,31 +1,40 @@
 # Crossfade-API
 
-A basic REST API to allow [crossfade.audio](http://crossfade.audio) to create unique URL hashes for playlists.
+A basic REST API to allow [xfade.audio](http://xfade.audio) to create unique URL hashes for playlists.
+
+Listens for `POST` requests to your-api-url.com/collections/new. Saves whatever JSON is posted in the body to a postgres database and returns a hashID (i.e. lkj902ad).
+
+A `GET` request to your-api-url.com/collections/lkj902ad will return the JSON that was originally POSTed.
 
 Adapted from [this great Flask tutorial](https://realpython.com/blog/python/flask-by-example-part-1-project-setup/).
 
 ### Installation
+`pip install -r requirements.txt`
 
-1. Clone the repo
-2. virtualenv env
-3. source env/bin/activate
-4. pip install -r requirements.txt
-5. deactivate
-6. pip install autoenv==1.0.0
+`export APP_SETTINGS="config.DevelopmentConfig"`
 
-#### Set local variables
-1. touch .env
+Create config.py:
+```
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
 
-2. Edit .env to add local settings
+class Config(object):
+    DEBUG = False
+    TESTING = False
+    CSRF_ENABLED = True
+    SECRET_KEY = 'your-secret-key-here'
 
-`source env/bin/activate`  
-`export APP_SETTINGS="config.ProductionConfig"`  
-`export DATABASE_URL="postgresql:///crossfade"`
 
-#### Update .bashrc
-1. echo "source `which activate.sh`" >> ~/.bashrc
-2. source ~/.bashrc
+class ProductionConfig(Config):
+    DEBUG = False
+    SQLALCHEMY_DATABASE_URI = 'postgresql:///crossfade'
 
-### Run it!
 
+class DevelopmentConfig(Config):
+    DEVELOPMENT = True
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'postgresql:///crossfade'
+```
+
+### Run it
 `python manage.py runserver`
