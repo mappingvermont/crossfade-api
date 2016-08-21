@@ -8,7 +8,7 @@ import sys
 import logging
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///crossfade'
+app.config.from_object(os.environ['CROSSFADE_APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
