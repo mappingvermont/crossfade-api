@@ -38,3 +38,11 @@ class DevelopmentConfig(Config):
 
 ### Run it
 `python manage.py runserver`
+
+POST some JSON: 
+
+`curl -H "Content-Type: application/json" -X POST -d '{"collection":{"one":["vid1","vid2","vid3"],"two":["vid4","vid5","vid6"]}}' http://localhost:5000/collection/new`
+
+GET JSON using a hashid: 
+
+`curl -H "Content-Type: application/json" -X GET http://localhost:5000/collection/pnel5aKB`
